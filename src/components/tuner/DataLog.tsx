@@ -22,12 +22,12 @@ export const DataLog = ({ data, connected }: DataLogProps) => {
   }, [data, connected]);
 
   return (
-    <div className="panel p-4 h-full flex flex-col">
-      <div className="flex items-center justify-between mb-3">
+    <div className="panel p-3 sm:p-4 h-full flex flex-col">
+      <div className="flex items-center justify-between mb-3 gap-2">
         <div className="text-[10px] uppercase tracking-[0.25em] text-muted-foreground">Live Datalog</div>
-        <div className="text-[10px] font-mono-tabular text-muted-foreground">{rows.length} samples · 4Hz</div>
+        <div className="text-[10px] font-mono-tabular text-muted-foreground shrink-0">{rows.length} · 4Hz</div>
       </div>
-      <div className="flex-1 overflow-auto font-mono-tabular text-[11px] -mx-2">
+      <div className="flex-1 overflow-auto font-mono-tabular text-[10px] sm:text-[11px] -mx-1 sm:-mx-2">
         <table className="w-full">
           <thead className="text-muted-foreground sticky top-0 bg-card">
             <tr>

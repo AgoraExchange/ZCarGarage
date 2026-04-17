@@ -51,19 +51,19 @@ export const MapEditor = ({ map, table, onChange }: MapEditorProps) => {
   const unit = table === "fuel" ? "AFR" : "° BTDC";
 
   return (
-    <div className="panel p-4">
-      <div className="flex items-center justify-between mb-3 flex-wrap gap-2">
-        <div>
+    <div className="panel p-3 sm:p-4">
+      <div className="flex items-start justify-between mb-3 flex-wrap gap-2">
+        <div className="min-w-0">
           <div className="text-[10px] uppercase tracking-[0.25em] text-muted-foreground">
             {table === "fuel" ? "Fuel Table" : "Ignition Table"} · RPM × Load%
           </div>
-          <div className="font-mono-tabular text-sm">
+          <div className="font-mono-tabular text-xs sm:text-sm break-words">
             {sel ? (
               <>
                 <span className="text-primary">{RPM_AXIS[sel.c]} rpm</span>
-                <span className="text-muted-foreground mx-2">/</span>
+                <span className="text-muted-foreground mx-1.5 sm:mx-2">/</span>
                 <span className="text-accent">{LOAD_AXIS[sel.r]}% load</span>
-                <span className="text-muted-foreground mx-2">→</span>
+                <span className="text-muted-foreground mx-1.5 sm:mx-2">→</span>
                 <span className="font-bold">{data[sel.r][sel.c].toFixed(2)} {unit}</span>
               </>
             ) : (
@@ -71,7 +71,7 @@ export const MapEditor = ({ map, table, onChange }: MapEditorProps) => {
             )}
           </div>
         </div>
-        <div className="flex gap-1.5">
+        <div className="flex gap-1.5 flex-wrap">
           <Button size="sm" variant="outline" onClick={() => adjust(-0.1)} disabled={!sel}>
             <Minus className="h-3 w-3" />
           </Button>
@@ -79,15 +79,15 @@ export const MapEditor = ({ map, table, onChange }: MapEditorProps) => {
             <Plus className="h-3 w-3" />
           </Button>
           <Button size="sm" variant="outline" onClick={reset}>
-            <RotateCcw className="h-3 w-3 mr-1" /> Reset
+            <RotateCcw className="h-3 w-3 sm:mr-1" /> <span className="hidden sm:inline">Reset</span>
           </Button>
           <Button size="sm" onClick={save} className="bg-gradient-primary">
-            <Save className="h-3 w-3 mr-1" /> Flash
+            <Save className="h-3 w-3 sm:mr-1" /> <span className="hidden sm:inline">Flash</span>
           </Button>
         </div>
       </div>
 
-      <div className="overflow-auto">
+      <div className="overflow-x-auto -mx-3 sm:mx-0 px-3 sm:px-0">
         <table className="w-full border-separate border-spacing-[2px] text-[10px] font-mono-tabular">
           <thead>
             <tr>

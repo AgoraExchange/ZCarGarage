@@ -176,7 +176,7 @@ const Index = () => {
 
           {/* LOG */}
           <TabsContent value="log" className="mt-4 grid lg:grid-cols-3 gap-4">
-            <div className="lg:col-span-2 h-[520px]">
+            <div className="lg:col-span-2 h-[420px] sm:h-[520px]">
               <DataLog data={data} connected={connected} />
             </div>
             <div className="space-y-3">
