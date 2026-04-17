@@ -1,3 +1,4 @@
+import { useEffect, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
 
 interface GaugeProps {
@@ -8,9 +9,11 @@ interface GaugeProps {
   unit: string;
   redline?: number;
   warning?: number;
-  size?: "sm" | "md" | "lg";
+  size?: "sm" | "md" | "lg" | "responsive";
   accent?: "primary" | "accent" | "warning" | "success";
 }
+
+const SIZE_MAP = { sm: 60, md: 85, lg: 110 } as const;
 
 export const Gauge = ({
   label,
@@ -23,11 +26,33 @@ export const Gauge = ({
   size = "md",
   accent = "primary",
 }: GaugeProps) => {
-  const pct = Math.max(0, Math.min(1, (value - min) / (max - min)));
-  const angle = -135 + pct * 270;
-  const radius = size === "lg" ? 110 : size === "sm" ? 60 : 85;
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [responsiveRadius, setResponsiveRadius] = useState(70);
+
+  useEffect(() => {
+    if (size !== "responsive") return;
+    const el = containerRef.current;
+    if (!el) return;
+    const update = () => {
+      const w = el.clientWidth;
+      // leave room for stroke (8) on each side
+      const r = Math.max(46, Math.min(95, Math.floor(w / 2) - 10));
+      setResponsiveRadius(r);
+    };
+    update();
+    const ro = new ResizeObserver(update);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, [size]);
+
+  const radius = size === "responsive" ? responsiveRadius : SIZE_MAP[size];
   const stroke = size === "lg" ? 12 : 8;
   const dim = (radius + stroke) * 2;
+  const valueTextClass =
+    size === "lg" ? "text-4xl" : size === "sm" ? "text-lg" : radius >= 80 ? "text-2xl" : radius >= 65 ? "text-xl" : "text-base";
+
+  const pct = Math.max(0, Math.min(1, (value - min) / (max - min)));
+  const angle = -135 + pct * 270;
   const circ = 2 * Math.PI * radius;
   const arcLen = (circ * 270) / 360;
   const filled = arcLen * pct;
@@ -56,8 +81,8 @@ export const Gauge = ({
   });
 
   return (
-    <div className="flex flex-col items-center">
-      <div className="relative" style={{ width: dim, height: dim }}>
+    <div ref={containerRef} className="flex flex-col items-center w-full">
+      <div className="relative" style={{ width: dim, height: dim, maxWidth: "100%" }}>
         <svg width={dim} height={dim} className="-rotate-90">
           {/* Track */}
           <circle
@@ -123,7 +148,7 @@ export const Gauge = ({
         </svg>
 
         <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-          <div className={cn("font-mono-tabular font-semibold leading-none", size === "lg" ? "text-4xl" : size === "sm" ? "text-lg" : "text-2xl", colorClass)}>
+          <div className={cn("font-mono-tabular font-semibold leading-none", valueTextClass, colorClass)}>
             {value.toFixed(value >= 100 ? 0 : 1)}
           </div>
           <div className="text-[10px] uppercase tracking-widest text-muted-foreground mt-1">{unit}</div>
