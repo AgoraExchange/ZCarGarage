@@ -39,14 +39,14 @@ const Index = () => {
     <div className="min-h-screen bg-background text-foreground">
       {/* Top bar */}
       <header className="sticky top-0 z-30 border-b border-border bg-background/85 backdrop-blur-xl">
-        <div className="max-w-[1600px] mx-auto px-4 lg:px-6 h-14 flex items-center gap-4">
-          <div className="flex items-center gap-2.5">
-            <div className="h-7 w-7 rounded bg-gradient-primary flex items-center justify-center font-black text-primary-foreground text-sm shadow-glow-soft">
+        <div className="max-w-[1600px] mx-auto px-3 sm:px-4 lg:px-6 h-14 flex items-center gap-2 sm:gap-4">
+          <div className="flex items-center gap-2 sm:gap-2.5 min-w-0">
+            <div className="h-7 w-7 shrink-0 rounded bg-gradient-primary flex items-center justify-center font-black text-primary-foreground text-sm shadow-glow-soft">
               Z
             </div>
-            <div className="leading-tight">
-              <div className="font-bold text-sm tracking-tight">NISMO Tuner OS</div>
-              <div className="text-[10px] text-muted-foreground font-mono-tabular">370Z · VQ37VHR · v2.4.1</div>
+            <div className="leading-tight min-w-0">
+              <div className="font-bold text-sm tracking-tight truncate">NISMO Tuner OS</div>
+              <div className="text-[10px] text-muted-foreground font-mono-tabular truncate">370Z · VQ37VHR · v2.4.1</div>
             </div>
           </div>
           <div className="hidden md:flex items-center gap-4 ml-6 text-[11px] font-mono-tabular text-muted-foreground">
@@ -54,12 +54,15 @@ const Index = () => {
             <div><span className="text-muted-foreground/60">CAL</span> <span className="text-foreground">23710-9CV0A</span></div>
           </div>
           <div className="flex-1" />
-          <div className="hidden sm:flex items-center gap-2 text-[11px] font-mono-tabular">
-            <span className="text-muted-foreground">Active:</span>
-            <span className="px-2 py-0.5 rounded bg-primary/10 text-primary border border-primary/30 font-semibold">{active.name}</span>
+          <div className="flex items-center gap-1.5 text-[10px] sm:text-[11px] font-mono-tabular min-w-0">
+            <span className="text-muted-foreground hidden xs:inline">Active:</span>
+            <span className="px-1.5 sm:px-2 py-0.5 rounded bg-primary/10 text-primary border border-primary/30 font-semibold truncate max-w-[110px] sm:max-w-none">{active.name}</span>
           </div>
           <Button variant="outline" size="sm" className="hidden sm:flex">
             <Download className="h-3.5 w-3.5 mr-1.5" /> Export Log
+          </Button>
+          <Button variant="outline" size="icon" className="sm:hidden h-8 w-8 shrink-0" aria-label="Export log">
+            <Download className="h-3.5 w-3.5" />
           </Button>
         </div>
       </header>
@@ -77,39 +80,41 @@ const Index = () => {
         </div>
       </div>
 
-      <main className="max-w-[1600px] mx-auto px-4 lg:px-6 py-5 space-y-5">
+      <main className="max-w-[1600px] mx-auto px-3 sm:px-4 lg:px-6 py-4 sm:py-5 space-y-4 sm:space-y-5">
         <ConnectionStatus connected={connected} onToggle={() => setConnected((c) => !c)} />
 
         <Tabs defaultValue="dash" className="w-full">
-          <TabsList className="bg-surface-1 border border-border h-10 p-1">
-            <TabsTrigger value="dash" className="data-[state=active]:bg-gradient-primary data-[state=active]:text-primary-foreground gap-1.5">
-              <GaugeIcon className="h-3.5 w-3.5" /> Dashboard
-            </TabsTrigger>
-            <TabsTrigger value="maps" className="data-[state=active]:bg-gradient-primary data-[state=active]:text-primary-foreground gap-1.5">
-              <FileCog className="h-3.5 w-3.5" /> Maps
-            </TabsTrigger>
-            <TabsTrigger value="editor" className="data-[state=active]:bg-gradient-primary data-[state=active]:text-primary-foreground gap-1.5">
-              <FlaskConical className="h-3.5 w-3.5" /> Tables
-            </TabsTrigger>
-            <TabsTrigger value="log" className="data-[state=active]:bg-gradient-primary data-[state=active]:text-primary-foreground gap-1.5">
-              <Activity className="h-3.5 w-3.5" /> Logs
-            </TabsTrigger>
-            <TabsTrigger value="diag" className="data-[state=active]:bg-gradient-primary data-[state=active]:text-primary-foreground gap-1.5">
-              <Settings className="h-3.5 w-3.5" /> Diag
-            </TabsTrigger>
-          </TabsList>
+          <div className="-mx-3 sm:mx-0 overflow-x-auto scrollbar-none">
+            <TabsList className="bg-surface-1 border border-border h-10 p-1 inline-flex w-max min-w-full mx-3 sm:mx-0">
+              <TabsTrigger value="dash" className="data-[state=active]:bg-gradient-primary data-[state=active]:text-primary-foreground gap-1.5 px-2.5 sm:px-3">
+                <GaugeIcon className="h-3.5 w-3.5" /> Dashboard
+              </TabsTrigger>
+              <TabsTrigger value="maps" className="data-[state=active]:bg-gradient-primary data-[state=active]:text-primary-foreground gap-1.5 px-2.5 sm:px-3">
+                <FileCog className="h-3.5 w-3.5" /> Maps
+              </TabsTrigger>
+              <TabsTrigger value="editor" className="data-[state=active]:bg-gradient-primary data-[state=active]:text-primary-foreground gap-1.5 px-2.5 sm:px-3">
+                <FlaskConical className="h-3.5 w-3.5" /> Tables
+              </TabsTrigger>
+              <TabsTrigger value="log" className="data-[state=active]:bg-gradient-primary data-[state=active]:text-primary-foreground gap-1.5 px-2.5 sm:px-3">
+                <Activity className="h-3.5 w-3.5" /> Logs
+              </TabsTrigger>
+              <TabsTrigger value="diag" className="data-[state=active]:bg-gradient-primary data-[state=active]:text-primary-foreground gap-1.5 px-2.5 sm:px-3">
+                <Settings className="h-3.5 w-3.5" /> Diag
+              </TabsTrigger>
+            </TabsList>
+          </div>
 
           {/* DASHBOARD */}
           <TabsContent value="dash" className="space-y-4 mt-4">
             <RpmBar rpm={data.rpm} redline={active.revLimit} shiftLight={active.revLimit - 400} />
 
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 panel p-5">
-              <Gauge label="Speed" value={data.speed} min={0} max={180} unit="MPH" />
-              <Gauge label="Throttle" value={data.throttle} min={0} max={100} unit="%" accent="accent" />
-              <Gauge label="AFR" value={data.afr} min={10} max={16} unit="A/F" warning={15} accent="accent" />
-              <Gauge label="Coolant" value={data.coolant} min={140} max={250} unit="°F" warning={220} redline={235} />
-              <Gauge label="Oil Pressure" value={data.oilPress} min={0} max={100} unit="PSI" accent="success" />
-              <Gauge label="Battery" value={data.voltage} min={11} max={15} unit="V" accent="success" />
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4 panel p-3 sm:p-5">
+              <Gauge label="Speed" value={data.speed} min={0} max={180} unit="MPH" size="responsive" />
+              <Gauge label="Throttle" value={data.throttle} min={0} max={100} unit="%" accent="accent" size="responsive" />
+              <Gauge label="AFR" value={data.afr} min={10} max={16} unit="A/F" warning={15} accent="accent" size="responsive" />
+              <Gauge label="Coolant" value={data.coolant} min={140} max={250} unit="°F" warning={220} redline={235} size="responsive" />
+              <Gauge label="Oil Pressure" value={data.oilPress} min={0} max={100} unit="PSI" accent="success" size="responsive" />
+              <Gauge label="Battery" value={data.voltage} min={11} max={15} unit="V" accent="success" size="responsive" />
             </div>
 
             <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
