@@ -14,15 +14,15 @@ export const RpmBar = ({ rpm, redline, shiftLight }: RpmBarProps) => {
   const redSeg = Math.round((redline / max) * segments);
 
   return (
-    <div className="panel p-4">
-      <div className="flex items-baseline justify-between mb-2">
-        <div className="text-[10px] uppercase tracking-[0.25em] text-muted-foreground">Engine Speed</div>
-        <div className="font-mono-tabular text-3xl font-bold text-glow">
+    <div className="panel p-3 sm:p-4">
+      <div className="flex items-baseline justify-between gap-2 mb-2">
+        <div className="text-[10px] uppercase tracking-[0.25em] text-muted-foreground shrink-0">Engine Speed</div>
+        <div className="font-mono-tabular text-2xl sm:text-3xl font-bold text-glow truncate">
           {Math.round(rpm).toLocaleString()}
-          <span className="text-xs text-muted-foreground ml-2 font-normal">RPM</span>
+          <span className="text-[10px] sm:text-xs text-muted-foreground ml-1.5 sm:ml-2 font-normal">RPM</span>
         </div>
       </div>
-      <div className="flex gap-[3px] h-6">
+      <div className="flex gap-[2px] sm:gap-[3px] h-5 sm:h-6">
         {Array.from({ length: segments }).map((_, i) => {
           const isRed = i >= redSeg;
           const isShift = i >= shiftSeg;
