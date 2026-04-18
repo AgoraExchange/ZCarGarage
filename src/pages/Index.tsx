@@ -1,8 +1,9 @@
 import { useMemo, useState } from "react";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
-import { Gauge as GaugeIcon, Settings, FileCog, Activity, FlaskConical, Download } from "lucide-react";
+import { Gauge as GaugeIcon, Settings, FileCog, Activity, FlaskConical, Download, Mic, MicOff } from "lucide-react";
 import { toast } from "sonner";
+import { useMicLevel } from "@/hooks/useMicLevel";
 import engineHero from "@/assets/engine-hero.jpg";
 import { ConnectionStatus } from "@/components/tuner/ConnectionStatus";
 import { Gauge } from "@/components/tuner/Gauge";
@@ -19,11 +20,32 @@ const Index = () => {
   const [maps, setMaps] = useState<TuneMap[]>(DEFAULT_MAPS);
   const [selectedId, setSelectedId] = useState<string>(DEFAULT_MAPS.find((m) => m.active)!.id);
   const [editorTable, setEditorTable] = useState<"fuel" | "ignition">("fuel");
+  const [micEnabled, setMicEnabled] = useState(false);
 
   const selected = useMemo(() => maps.find((m) => m.id === selectedId)!, [maps, selectedId]);
   const active = useMemo(() => maps.find((m) => m.active)!, [maps]);
 
-  const data = useEcuTelemetry(connected, active.octane === "E85" ? 1.3 : active.id === "valet" ? 0.4 : 1);
+  const mic = useMicLevel(micEnabled);
+  const data = useEcuTelemetry(
+    connected,
+    active.octane === "E85" ? 1.3 : active.id === "valet" ? 0.4 : active.id === "drift" ? 1.2 : 1,
+    mic.level,
+    mic.enabled && connected
+  );
+
+  const toggleMic = () => {
+    if (!connected) {
+      toast.error("Connect to ECU first", { description: "Mic-driven throttle needs a live ECU link." });
+      return;
+    }
+    if (micEnabled) {
+      setMicEnabled(false);
+      toast.info("Mic input disabled");
+    } else {
+      setMicEnabled(true);
+      toast.success("Mic armed", { description: "Rev your engine — loudness drives throttle & RPM." });
+    }
+  };
 
   const activate = (id: string) => {
     setMaps((prev) => prev.map((m) => ({ ...m, active: m.id === id })));
@@ -63,6 +85,26 @@ const Index = () => {
           </Button>
           <Button variant="outline" size="icon" className="sm:hidden h-8 w-8 shrink-0" aria-label="Export log">
             <Download className="h-3.5 w-3.5" />
+          </Button>
+          <Button
+            variant={mic.enabled ? "default" : "outline"}
+            size="icon"
+            onClick={toggleMic}
+            aria-label={mic.enabled ? "Disable microphone rev input" : "Enable microphone rev input"}
+            aria-pressed={mic.enabled}
+            className={cn(
+              "h-8 w-8 shrink-0 relative",
+              mic.enabled && "bg-gradient-primary text-primary-foreground shadow-glow-soft"
+            )}
+          >
+            {mic.enabled ? <Mic className="h-3.5 w-3.5" /> : <MicOff className="h-3.5 w-3.5" />}
+            {mic.enabled && (
+              <span
+                aria-hidden
+                className="absolute -bottom-0.5 -right-0.5 h-2 w-2 rounded-full bg-success animate-pulse-glow"
+                style={{ transform: `scale(${0.6 + mic.level * 1.4})` }}
+              />
+            )}
           </Button>
         </div>
       </header>
