@@ -19,27 +19,50 @@ export type Telemetry = {
 
 const clamp = (v: number, min: number, max: number) => Math.max(min, Math.min(max, v));
 
+const IDLE: Telemetry = {
+  rpm: 0,
+  speed: 0,
+  throttle: 0,
+  boost: 0,
+  afr: 14.7,
+  coolant: 0,
+  iat: 0,
+  oilPress: 0,
+  oilTemp: 0,
+  voltage: 0,
+  knock: 0,
+  gear: 0,
+  timing: 0,
+  load: 0,
+};
+
 export function useEcuTelemetry(connected: boolean, aggression = 1) {
-  const [data, setData] = useState<Telemetry>({
-    rpm: 850,
-    speed: 0,
-    throttle: 0,
-    boost: 0,
-    afr: 14.7,
-    coolant: 192,
-    iat: 95,
-    oilPress: 28,
-    oilTemp: 198,
-    voltage: 14.2,
-    knock: 0,
-    gear: 0,
-    timing: 12,
-    load: 8,
-  });
+  const [data, setData] = useState<Telemetry>(IDLE);
   const tRef = useRef(0);
 
   useEffect(() => {
-    if (!connected) return;
+    if (!connected) {
+      tRef.current = 0;
+      setData(IDLE);
+      return;
+    }
+    // Settle to running idle baseline once connected
+    setData({
+      rpm: 850,
+      speed: 0,
+      throttle: 0,
+      boost: 0,
+      afr: 14.7,
+      coolant: 192,
+      iat: 95,
+      oilPress: 28,
+      oilTemp: 198,
+      voltage: 14.2,
+      knock: 0,
+      gear: 0,
+      timing: 12,
+      load: 8,
+    });
     const id = setInterval(() => {
       tRef.current += 0.1;
       const t = tRef.current;
