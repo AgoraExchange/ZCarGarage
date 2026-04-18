@@ -92,6 +92,12 @@
     background-image: var(--gradient-glow);
     background-attachment: fixed;
     font-feature-settings: "ss01", "cv11";
+    /* iOS home-screen / notch safe areas */
+    padding-top: env(safe-area-inset-top);
+    padding-bottom: env(safe-area-inset-bottom);
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+    overscroll-behavior-y: none;
   }
 }
 
