@@ -36,9 +36,11 @@ const IDLE: Telemetry = {
   load: 0,
 };
 
-export function useEcuTelemetry(connected: boolean, aggression = 1) {
+export function useEcuTelemetry(connected: boolean, aggression = 1, micLevel = 0, micActive = false) {
   const [data, setData] = useState<Telemetry>(IDLE);
   const tRef = useRef(0);
+  const micRef = useRef(0);
+  micRef.current = micLevel;
 
   useEffect(() => {
     if (!connected) {
@@ -66,16 +68,21 @@ export function useEcuTelemetry(connected: boolean, aggression = 1) {
     const id = setInterval(() => {
       tRef.current += 0.1;
       const t = tRef.current;
-      // Simulate driving cycle
+      const mic = micRef.current; // 0..1
+      // When mic is active, throttle is driven by mic loudness instead of sim wave
       const wave = (Math.sin(t * 0.6) + 1) / 2; // 0..1
       const burst = Math.max(0, Math.sin(t * 1.4)) ** 2;
-      const throttle = clamp(wave * 70 + burst * 30 * aggression, 0, 100);
-      const targetRpm = 850 + throttle * 75 + burst * 1500 * aggression;
+      const simThrottle = clamp(wave * 70 + burst * 30 * aggression, 0, 100);
+      const micThrottle = clamp(mic * 110, 0, 100);
+      const throttle = micActive ? micThrottle : simThrottle;
+      const targetRpm = micActive
+        ? 850 + mic * 6500 * aggression
+        : 850 + throttle * 75 + burst * 1500 * aggression;
       const speed = clamp(throttle * 1.2 + Math.sin(t * 0.3) * 10, 0, 155);
       const gear = speed < 5 ? 0 : Math.min(6, Math.floor(speed / 25) + 1);
 
       setData((prev) => ({
-        rpm: clamp(prev.rpm + (targetRpm - prev.rpm) * 0.25, 700, 7500),
+        rpm: clamp(prev.rpm + (targetRpm - prev.rpm) * (micActive ? 0.45 : 0.25), 700, 7800),
         speed,
         throttle,
         boost: clamp(throttle / 14 + burst * 2 * aggression - 0.5, -10, 18),
@@ -92,7 +99,7 @@ export function useEcuTelemetry(connected: boolean, aggression = 1) {
       }));
     }, 80);
     return () => clearInterval(id);
-  }, [connected, aggression]);
+  }, [connected, aggression, micActive]);
 
   return data;
 }
