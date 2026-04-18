@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Gauge as GaugeIcon, Settings, FileCog, Activity, FlaskConical, Download, Mic, MicOff } from "lucide-react";
 import { toast } from "sonner";
 import { useMicLevel } from "@/hooks/useMicLevel";
+import { cn } from "@/lib/utils";
 import engineHero from "@/assets/engine-hero.jpg";
 import { ConnectionStatus } from "@/components/tuner/ConnectionStatus";
 import { Gauge } from "@/components/tuner/Gauge";
