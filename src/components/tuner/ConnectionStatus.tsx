@@ -59,7 +59,13 @@ export const ConnectionStatus = ({ connected, onToggle }: ConnectionStatusProps)
         </div>
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2">
-            <span className={cn("led", connected ? "text-success animate-pulse-glow" : "text-muted-foreground")}>•</span>
+            <span
+              aria-hidden
+              className={cn(
+                "led shrink-0",
+                connected ? "bg-success text-success animate-pulse-glow" : "bg-muted-foreground/50 text-muted-foreground"
+              )}
+            />
             <span className="text-xs uppercase tracking-[0.2em] font-semibold">
               {connected ? (connecting ? "Handshaking" : "ECU Linked") : "Disconnected"}
             </span>
