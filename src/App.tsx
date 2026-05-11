@@ -11,6 +11,7 @@ const queryClient = new QueryClient();
 
 const SPLASH_DURATION_MS = 3000;
 const appIconUrl = `${import.meta.env.BASE_URL}nismoflasher.png`;
+const routerBasename = import.meta.env.BASE_URL === "/" ? undefined : import.meta.env.BASE_URL;
 
 const SplashScreen = () => (
   <div className="splash-screen" role="status" aria-label="Loading NISMO Tuner OS">
@@ -45,7 +46,7 @@ const App = () => {
       <TooltipProvider>
         <Toaster />
         <Sonner />
-        <BrowserRouter>
+        <BrowserRouter basename={routerBasename}>
           <Routes>
             <Route path="/" element={<Index />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
