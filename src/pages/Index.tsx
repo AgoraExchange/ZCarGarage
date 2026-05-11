@@ -16,6 +16,8 @@ import { Diagnostics } from "@/components/tuner/Diagnostics";
 import { useEcuTelemetry } from "@/hooks/useEcuTelemetry";
 import { DEFAULT_MAPS, TuneMap } from "@/data/maps";
 
+const appIconUrl = `${import.meta.env.BASE_URL}nismoflasher.png`;
+
 const Index = () => {
   const [connected, setConnected] = useState(false);
   const [maps, setMaps] = useState<TuneMap[]>(DEFAULT_MAPS);
@@ -64,9 +66,11 @@ const Index = () => {
       <header className="sticky top-0 z-30 border-b border-border bg-background/85 backdrop-blur-xl">
         <div className="max-w-[1600px] mx-auto px-3 sm:px-4 lg:px-6 h-14 flex items-center gap-2 sm:gap-4">
           <div className="flex items-center gap-2 sm:gap-2.5 min-w-0">
-            <div className="h-7 w-7 shrink-0 rounded bg-gradient-primary flex items-center justify-center font-black text-primary-foreground text-sm shadow-glow-soft">
-              Z
-            </div>
+            <img
+              src={appIconUrl}
+              alt="ZCarGarage"
+              className="h-7 w-7 shrink-0 rounded object-cover shadow-glow-soft"
+            />
             <div className="leading-tight min-w-0">
               <div className="font-bold text-sm tracking-tight truncate">NISMO Tuner OS</div>
               <div className="text-[10px] text-muted-foreground font-mono-tabular truncate">370Z · VQ37VHR · v2.4.1</div>
